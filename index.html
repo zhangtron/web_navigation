@@ -23,6 +23,7 @@
             --border: rgba(148, 163, 184, 0.1);
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             --glass-blur: 12px;
+            --sidebar-width: 260px;
         }
 
         .light-theme {
@@ -43,6 +44,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow-x: hidden;
+            display: flex;
         }
 
         body::before {
@@ -66,46 +68,131 @@
             75% { transform: translate(-2%, 2%) rotate(-1deg); }
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur));
+            border-right: 1px solid var(--border);
             padding: 20px;
+            overflow-y: auto;
+            z-index: 100;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-top: 20px;
+        .sidebar-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .header h1 {
-            font-size: 2.8rem;
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
             background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .sidebar-section {
+            margin-bottom: 16px;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
             margin-bottom: 8px;
+            padding-left: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .sidebar-item-icon {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-item-count {
+            margin-left: auto;
+            background: rgba(99, 102, 241, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .sidebar-item.active .sidebar-item-count {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header-title {
+            font-size: 2rem;
+            color: var(--text-primary);
             font-weight: 700;
-            letter-spacing: -0.5px;
+            margin-bottom: 4px;
         }
 
         .header-subtitle {
             color: var(--text-secondary);
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .search-box {
-            max-width: 600px;
-            margin: 30px auto;
+            margin-bottom: 24px;
             position: relative;
         }
 
         .search-input {
             width: 100%;
-            padding: 16px 56px 16px 24px;
+            max-width: 500px;
+            padding: 14px 48px 14px 20px;
             border: 1px solid var(--border);
-            border-radius: 50px;
-            font-size: 16px;
+            border-radius: 14px;
+            font-size: 15px;
             background: var(--bg-card);
             backdrop-filter: blur(var(--glass-blur));
             color: var(--text-primary);
@@ -120,28 +207,26 @@
 
         .search-icon {
             position: absolute;
-            right: 20px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
-            font-size: 20px;
+            font-size: 18px;
         }
 
         .toolbar {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 24px;
             flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 10px 18px;
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.3s ease;
             display: inline-flex;
@@ -171,174 +256,13 @@
         }
 
         .btn-icon {
-            padding: 12px;
-            border-radius: 12px;
-        }
-
-        .categories {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 0 10px;
-        }
-
-        .category-tab {
-            padding: 10px 20px;
-            background: var(--bg-card);
-            backdrop-filter: blur(var(--glass-blur));
-            color: var(--text-secondary);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .category-tab:hover {
-            color: var(--text-primary);
-            border-color: var(--accent);
-            background: var(--bg-card-hover);
-        }
-
-        .category-tab.active {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(var(--glass-blur));
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            position: relative;
-            cursor: pointer;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            background: var(--bg-card-hover);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
-            border-color: var(--accent);
-        }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .card-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            gap: 16px;
-        }
-
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .card-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .card-title {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-url {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-category {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(99, 102, 241, 0.15);
-            color: var(--accent-hover);
-            padding: 6px 12px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .card-actions {
-            display: flex;
-            gap: 6px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card:hover .card-actions {
-            opacity: 1;
+            padding: 10px;
+            border-radius: 10px;
         }
 
         .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
+            padding: 6px 10px;
+            font-size: 0.8rem;
             border-radius: 8px;
         }
 
@@ -348,20 +272,135 @@
             border: none;
         }
 
-        .btn-edit:hover {
-            background: rgba(251, 191, 36, 0.25);
-        }
-
         .btn-delete {
             background: rgba(239, 68, 68, 0.15);
             color: #ef4444;
             border: none;
         }
 
-        .btn-delete:hover {
-            background: rgba(239, 68, 68, 0.25);
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
         }
 
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            background: var(--bg-card-hover);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 14px;
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .card-url {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            word-break: break-all;
+        }
+
+        .card-sub-links {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .sub-link {
+            display: flex;
+            align-items: center;
+            padding: 6px 0;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s ease;
+        }
+
+        .sub-link:hover {
+            color: var(--accent-hover);
+        }
+
+        .sub-link-icon {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 6px;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover .card-actions {
+            opacity: 1;
+        }
+
+        .card-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-hover);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -391,10 +430,12 @@
             background: var(--bg-card);
             backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            padding: 32px;
-            border-radius: 24px;
+            padding: 28px;
+            border-radius: 20px;
             width: 90%;
-            max-width: 520px;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease;
         }
@@ -405,73 +446,95 @@
         }
 
         .modal-header {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             color: var(--text-primary);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: var(--text-secondary);
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            padding: 14px 16px;
+            padding: 12px 14px;
             border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
             background: var(--bg-secondary);
             color: var(--text-primary);
             transition: all 0.3s ease;
         }
 
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
         }
 
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .sub-links-input {
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            background: var(--bg-secondary);
+        }
+
+        .sub-link-item {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .sub-link-item input {
+            flex: 1;
+        }
+
         .modal-footer {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: flex-end;
-            margin-top: 24px;
+            margin-top: 20px;
         }
 
         .empty-state {
             text-align: center;
-            padding: 80px 20px;
+            padding: 60px 20px;
             color: var(--text-secondary);
         }
 
         .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
+            font-size: 56px;
+            margin-bottom: 16px;
         }
 
         .empty-state h3 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: var(--text-primary);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .category-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: var(--bg-secondary);
-            border-radius: 12px;
-            margin-bottom: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
         }
 
         .category-item span {
@@ -481,74 +544,146 @@
         .category-count {
             background: rgba(99, 102, 241, 0.2);
             color: var(--accent-hover);
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.8rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
             margin-right: 10px;
         }
 
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
+        /* Mobile */
+        @media (max-width: 900px) {
+            :root {
+                --sidebar-width: 0px;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block !important;
+                position: fixed;
+                top: 16px;
+                left: 16px;
+                z-index: 150;
+            }
+
+            .toolbar {
+                padding-left: 50px;
+            }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
             .grid {
                 grid-template-columns: 1fr;
             }
 
-            .header h1 {
-                font-size: 2rem;
+            .main-content {
+                padding: 16px;
             }
+        }
 
-            .modal-content {
-                padding: 24px;
-            }
+        .menu-toggle {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-    <div class="theme-toggle">
-        <button class="btn btn-icon" onclick="toggleTheme()" title="切换主题">
-            <span id="themeIcon">🌙</span>
-        </button>
+    <!-- Mobile Menu Toggle -->
+    <button class="btn btn-icon menu-toggle" onclick="toggleSidebar()" style="display:none;">
+        <span>☰</span>
+    </button>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🔗 网址导航</div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">快速访问</div>
+            <div class="sidebar-item active" onclick="filterCategory('全部')" data-cat="全部">
+                <span class="sidebar-item-icon">✨</span>
+                <span>全部</span>
+                <span class="sidebar-item-count" id="count-全部">0</span>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">分类</div>
+            <div id="sidebarCategories"></div>
+        </div>
+
+        <div class="sidebar-section" style="margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border);">
+            <div class="sidebar-item" onclick="openAddModal()">
+                <span class="sidebar-item-icon">➕</span>
+                <span>添加网址</span>
+            </div>
+            <div class="sidebar-item" onclick="openCategoryModal()">
+                <span class="sidebar-item-icon">📁</span>
+                <span>管理分类</span>
+            </div>
+            <div class="sidebar-item" onclick="exportData()">
+                <span class="sidebar-item-icon">📤</span>
+                <span>导出数据</span>
+            </div>
+            <div class="sidebar-item" onclick="document.getElementById('importFile').click()">
+                <span class="sidebar-item-icon">📥</span>
+                <span>导入数据</span>
+            </div>
+        </div>
     </div>
 
-    <div class="container">
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="theme-toggle">
+            <button class="btn btn-icon" onclick="toggleTheme()" title="切换主题">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+
         <div class="header">
-            <h1>网址导航</h1>
-            <p class="header-subtitle">发现和管理你喜爱的网站</p>
+            <div class="header-title" id="headerTitle">全部网站</div>
+            <div class="header-subtitle" id="headerSubtitle">快速访问你收藏的网址</div>
         </div>
 
         <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" placeholder="搜索网站...">
             <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索网站..." style="padding-left: 48px;">
         </div>
 
         <div class="toolbar">
             <button class="btn btn-primary" onclick="openAddModal()">
                 <span>➕</span> 添加网址
             </button>
-            <button class="btn" onclick="openCategoryModal()">
-                <span>📁</span> 管理分类
-            </button>
-            <button class="btn" onclick="exportData()">
-                <span>📤</span> 导出
-            </button>
-            <button class="btn" onclick="document.getElementById('importFile').click()">
-                <span>📥</span> 导入
-            </button>
         </div>
 
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-
-        <div class="categories" id="categories">
-        </div>
-
-        <div class="grid" id="grid">
-        </div>
+        <div class="grid" id="grid"></div>
 
         <div class="empty-state" id="emptyState" style="display:none;">
             <div class="empty-state-icon">🌐</div>
@@ -557,21 +692,32 @@
         </div>
     </div>
 
-    <!-- 添加/编辑网址模态框 -->
+    <!-- Hidden input -->
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+
+    <!-- Add/Edit Modal -->
     <div class="modal" id="urlModal">
         <div class="modal-content">
             <div class="modal-header" id="urlModalTitle">添加网址</div>
             <div class="form-group">
                 <label>名称</label>
-                <input type="text" id="siteName" placeholder="例如：生意社">
+                <input type="text" id="siteName" placeholder="例如：同花顺">
             </div>
             <div class="form-group">
                 <label>网址</label>
                 <input type="text" id="siteUrl" placeholder="https://www.example.com">
             </div>
             <div class="form-group">
+                <label>图标 (可选，emoji)</label>
+                <input type="text" id="siteEmoji" placeholder="🔗">
+            </div>
+            <div class="form-group">
                 <label>分类</label>
                 <select id="siteCategory"></select>
+            </div>
+            <div class="form-group">
+                <label>子链接 (可选，每行格式：名称|网址)</label>
+                <textarea id="siteSubLinks" placeholder="行情中心|https://q.10jqka.com.cn/&#10;数据中心|https://data.10jqka.com.cn/"></textarea>
             </div>
             <div class="modal-footer">
                 <button class="btn" onclick="closeUrlModal()">取消</button>
@@ -580,13 +726,13 @@
         </div>
     </div>
 
-    <!-- 分类管理模态框 -->
+    <!-- Category Modal -->
     <div class="modal" id="categoryModal">
         <div class="modal-content">
             <div class="modal-header">管理分类</div>
             <div class="form-group">
                 <label>添加新分类</label>
-                <div style="display:flex;gap:10px;">
+                <div style="display:flex;gap:8px;">
                     <input type="text" id="newCategory" placeholder="分类名称">
                     <button class="btn btn-primary" onclick="addCategory()">添加</button>
                 </div>
@@ -603,7 +749,7 @@
 
     <script>
         let data = {
-            categories: ['期货', '股票', '宏观', '政府'],
+            categories: ['期货', '股票', '宏观', '美国宏观', '政府', '投资工具', '产业链'],
             sites: [],
             currentCategory: '全部',
             theme: 'dark'
@@ -611,78 +757,93 @@
 
         const defaultSites = [
             // 期货
-            { name: '生意社', url: 'https://www.100ppi.com/cindex/', category: '期货' },
-            { name: '大商所', url: 'http://www.dce.com.cn/dce/', category: '期货' },
-            { name: '中金所', url: 'http://www.cffex.com.cn/cn/hs300.html', category: '期货' },
-            { name: '广期所', url: 'http://www.gfex.com.cn/gfex/gyeg/sspz.shtml', category: '期货' },
-            { name: '郑交所', url: 'https://www.czce.com.cn/cn/sspz/H077002index_1.htm', category: '期货' },
-            { name: '上海能源交易所', url: 'https://www.ine.cn/products/futures/energyandchemical/sc_f/', category: '期货' },
-            { name: '上海期货交易所', url: 'https://www.shfe.com.cn/products/futures/metal/nonferrousmetal/sn_f/', category: '期货' },
+            { name: '生意社', url: 'https://www.100ppi.com/cindex/', category: '期货', emoji: '📊' },
+            { name: '大商所', url: 'http://www.dce.com.cn/dce/', category: '期货', emoji: '🌾' },
+            { name: '中金所', url: 'http://www.cffex.com.cn/cn/hs300.html', category: '期货', emoji: '📈' },
+            { name: '广期所', url: 'http://www.gfex.com.cn/gfex/gyeg/sspz.shtml', category: '期货', emoji: '🔷' },
+            { name: '郑交所', url: 'https://www.czce.com.cn/cn/sspz/H077002index_1.htm', category: '期货', emoji: '🌾' },
+            { name: '上海能源交易所', url: 'https://www.ine.cn/products/futures/energyandchemical/sc_f/', category: '期货', emoji: '⛽' },
+            { name: '上海期货交易所', url: 'https://www.shfe.com.cn/products/futures/metal/nonferrousmetal/sn_f/', category: '期货', emoji: '🔩' },
             // 股票
-            { name: '东方财富网', url: 'https://www.eastmoney.com/', category: '股票' },
-            { name: '同花顺', url: 'https://www.10jqka.com.cn/', category: '股票' },
-            { name: '雪球', url: 'https://xueqiu.com/', category: '股票' },
-            { name: '同花顺财经', url: 'http://www.10jqka.com.cn/', category: '股票' },
-            { name: '网易财经', url: 'https://money.163.com/', category: '股票' },
-            { name: '新浪财经', url: 'https://finance.sina.com.cn/', category: '股票' },
-            { name: '腾讯财经', url: 'https://finance.qq.com/', category: '股票' },
-            { name: '和讯网', url: 'https://www.hexun.com/', category: '股票' },
-            { name: '每日财经', url: 'https://www.mrcjcn.com/', category: '股票' },
-            { name: '中财网', url: 'https://www.cfi.net.cn/', category: '股票' },
+            { name: '东方财富网', url: 'https://www.eastmoney.com/', category: '股票', emoji: '💰',
+              subLinks: [
+                { name: '行情中心', url: 'https://quote.eastmoney.com/' },
+                { name: '数据中心', url: 'https://data.eastmoney.com/' },
+                { name: '股吧', url: 'https://guba.eastmoney.com/' }
+              ]},
+            { name: '同花顺', url: 'https://www.10jqka.com.cn/', category: '股票', emoji: '♠️',
+              subLinks: [
+                { name: '行情中心', url: 'https://q.10jqka.com.cn/' },
+                { name: '数据中心', url: 'https://data.10jqka.com.cn/' },
+                { name: 'i问财', url: 'https://www.iwencai.com/' }
+              ]},
+            { name: '雪球', url: 'https://xueqiu.com/', category: '股票', emoji: '❄️' },
+            { name: '网易财经', url: 'https://money.163.com/', category: '股票', emoji: '📰' },
+            { name: '新浪财经', url: 'https://finance.sina.com.cn/', category: '股票', emoji: '📰' },
+            { name: '腾讯财经', url: 'https://finance.qq.com/', category: '股票', emoji: '📰' },
+            { name: '和讯网', url: 'https://www.hexun.com/', category: '股票', emoji: '📊' },
+            { name: '中财网', url: 'https://www.cfi.net.cn/', category: '股票', emoji: '📊' },
             // 宏观
-            { name: '国家统计局', url: 'https://www.stats.gov.cn/', category: '宏观' },
-            { name: '中国人民银行', url: 'http://www.pbc.gov.cn/', category: '宏观' },
-            { name: '财政部', url: 'http://www.mof.gov.cn/', category: '宏观' },
-            { name: '国家发改委', url: 'https://www.ndrc.gov.cn/', category: '宏观' },
-            { name: '国家外汇管理局', url: 'https://www.safe.gov.cn/', category: '宏观' },
-            { name: '国务院发展研究中心', url: 'http://www.drc.gov.cn/', category: '宏观' },
-            { name: '国家税务总局', url: 'https://www.chinatax.gov.cn/', category: '宏观' },
-            { name: '中国证券监督管理委员会', url: 'http://www.csrc.gov.cn/', category: '宏观' },
-            { name: '中国银行保险监督管理委员会', url: 'http://www.cbirc.gov.cn/', category: '宏观' },
-            { name: '中国期货业协会', url: 'http://www.cfachina.org/', category: '宏观' },
+            { name: '国家统计局', url: 'https://www.stats.gov.cn/', category: '宏观', emoji: '📊' },
+            { name: '中国人民银行', url: 'http://www.pbc.gov.cn/', category: '宏观', emoji: '🏦' },
+            { name: '财政部', url: 'http://www.mof.gov.cn/', category: '宏观', emoji: '💵' },
+            { name: '国家发改委', url: 'https://www.ndrc.gov.cn/', category: '宏观', emoji: '📋' },
+            { name: '国家外汇管理局', url: 'https://www.safe.gov.cn/', category: '宏观', emoji: '💱' },
+            { name: '国务院发展研究中心', url: 'http://www.drc.gov.cn/', category: '宏观', emoji: '📚' },
+            { name: '国家税务总局', url: 'https://www.chinatax.gov.cn/', category: '宏观', emoji: '📋' },
+            { name: '中国证券监督管理委员会', url: 'http://www.csrc.gov.cn/', category: '宏观', emoji: '📋' },
+            { name: '中国银行保险监督管理委员会', url: 'http://www.cbirc.gov.cn/', category: '宏观', emoji: '🏦' },
+            { name: '中国期货业协会', url: 'http://www.cfachina.org/', category: '宏观', emoji: '📊' },
+            // 美国宏观
+            { name: '美联储', url: 'https://www.federalreserve.gov/', category: '美国宏观', emoji: '🏛️' },
+            { name: '美国财政部', url: 'https://home.treasury.gov/', category: '美国宏观', emoji: '💵' },
+            { name: '美国劳工部', url: 'https://www.dol.gov/', category: '美国宏观', emoji: '📊' },
+            { name: '美国商务部', url: 'https://www.commerce.gov/', category: '美国宏观', emoji: '📊' },
+            { name: 'SEC', url: 'https://www.sec.gov/', category: '美国宏观', emoji: '📋' },
+            { name: '世界银行', url: 'https://www.worldbank.org/', category: '美国宏观', emoji: '🌍' },
+            { name: 'IMF', url: 'https://www.imf.org/', category: '美国宏观', emoji: '🌍' },
+            { name: 'OECD', url: 'https://www.oecd.org/', category: '美国宏观', emoji: '🌍' },
+            { name: 'Trading Economics', url: 'https://tradingeconomics.com/', category: '美国宏观', emoji: '📈' },
+            { name: 'Yahoo Finance', url: 'https://finance.yahoo.com/', category: '美国宏观', emoji: '📰' },
+            { name: 'Bloomberg', url: 'https://www.bloomberg.com/', category: '美国宏观', emoji: '📰' },
             // 政府
-            { name: '中国政府网', url: 'http://www.gov.cn/', category: '政府' },
-            { name: '北京市人民政府', url: 'http://www.beijing.gov.cn/', category: '政府' },
-            { name: '上海市人民政府', url: 'http://www.shanghai.gov.cn/', category: '政府' },
-            { name: '天津市人民政府', url: 'http://www.tj.gov.cn/', category: '政府' },
-            { name: '重庆市人民政府', url: 'http://www.cq.gov.cn/', category: '政府' },
-            { name: '广东省人民政府', url: 'http://www.gd.gov.cn/', category: '政府' },
-            { name: '浙江省人民政府', url: 'http://www.zj.gov.cn/', category: '政府' },
-            { name: '江苏省人民政府', url: 'http://www.jiangsu.gov.cn/', category: '政府' },
-            { name: '山东省人民政府', url: 'http://www.shandong.gov.cn/', category: '政府' },
-            { name: '河南省人民政府', url: 'http://www.henan.gov.cn/', category: '政府' },
-            { name: '四川省人民政府', url: 'http://www.sc.gov.cn/', category: '政府' },
-            { name: '湖北省人民政府', url: 'http://www.hubei.gov.cn/', category: '政府' },
-            { name: '湖南省人民政府', url: 'http://www.hunan.gov.cn/', category: '政府' },
-            { name: '福建省人民政府', url: 'http://www.fujian.gov.cn/', category: '政府' },
-            { name: '安徽省人民政府', url: 'http://www.ah.gov.cn/', category: '政府' },
-            { name: '陕西省人民政府', url: 'http://www.shaanxi.gov.cn/', category: '政府' },
-            { name: '河北省人民政府', url: 'http://www.hebei.gov.cn/', category: '政府' },
-            { name: '辽宁省人民政府', url: 'http://www.ln.gov.cn/', category: '政府' },
-            { name: '黑龙江省人民政府', url: 'http://www.hlj.gov.cn/', category: '政府' },
-            { name: '吉林省人民政府', url: 'http://www.jl.gov.cn/', category: '政府' },
-            { name: '甘肃省人民政府', url: 'http://www.gansu.gov.cn/', category: '政府' },
-            { name: '山西省人民政府', url: 'http://www.shanxi.gov.cn/', category: '政府' },
-            { name: '贵州省人民政府', url: 'http://www.guizhou.gov.cn/', category: '政府' },
-            { name: '广西壮族自治区人民政府', url: 'http://www.gxzf.gov.cn/', category: '政府' },
-            { name: '云南省人民政府', url: 'http://www.yn.gov.cn/', category: '政府' },
-            { name: '新疆维吾尔自治区人民政府', url: 'http://www.xinjiang.gov.cn/', category: '政府' },
-            { name: '宁夏回族自治区人民政府', url: 'http://www.nx.gov.cn/', category: '政府' },
-            { name: '青海省人民政府', url: 'http://www.qh.gov.cn/', category: '政府' },
-            { name: '海南省人民政府', url: 'http://www.hainan.gov.cn/', category: '政府' },
-            { name: '西藏自治区人民政府', url: 'http://www.xizang.gov.cn/', category: '政府' },
-            { name: '香港特别行政区政府', url: 'http://www.gov.hk/', category: '政府' },
-            { name: '澳门特别行政区政府', url: 'http://www.gov.mo/', category: '政府' }
+            { name: '中国政府网', url: 'http://www.gov.cn/', category: '政府', emoji: '🏛️' },
+            { name: '北京市人民政府', url: 'http://www.beijing.gov.cn/', category: '政府', emoji: '🏛️' },
+            { name: '上海市人民政府', url: 'http://www.shanghai.gov.cn/', category: '政府', emoji: '🏛️' },
+            { name: '广东省人民政府', url: 'http://www.gd.gov.cn/', category: '政府', emoji: '🏛️' },
+            { name: '浙江省人民政府', url: 'http://www.zj.gov.cn/', category: '政府', emoji: '🏛️' },
+            { name: '江苏省人民政府', url: 'http://www.jiangsu.gov.cn/', category: '政府', emoji: '🏛️' },
+            // 投资工具
+            { name: '集思录', url: 'https://www.jisilu.cn/', category: '投资工具', emoji: '📊',
+              subLinks: [
+                { name: '可转债', url: 'https://www.jisilu.cn/data/cbnew/' },
+                { name: 'A股', url: 'https://www.jisilu.cn/data/stock/' },
+                { name: '基金', url: 'https://www.jisilu.cn/data/qdii/' }
+              ]},
+            { name: '理杏仁', url: 'https://www.lixinger.com/', category: '投资工具', emoji: '📊' },
+            { name: '海龟量化', url: 'https://guhai.la/', category: '投资工具', emoji: '🐢' },
+            { name: '果仁网', url: 'https://guorn.com/', category: '投资工具', emoji: '🌰' },
+            { name: '优矿', url: 'https://uqer.io/', category: '投资工具', emoji: '⛏️' },
+            { name: '聚宽', url: 'https://www.joinquant.com/', category: '投资工具', emoji: '🔗' },
+            { name: '米筐科技', url: 'https://www.ricequant.com/', category: '投资工具', emoji: '🍚' },
+            { name: 'Wind', url: 'https://www.wind.com.cn/', category: '投资工具', emoji: '💨' },
+            // 产业链
+            { name: '生意社', url: 'https://www.100ppi.com/', category: '产业链', emoji: '🌐' },
+            { name: '卓创资讯', url: 'https://www.sci99.com/', category: '产业链', emoji: '📊' },
+            { name: '百川盈孚', url: 'https://www.baiinfo.com/', category: '产业链', emoji: '🌊' },
+            { name: '隆众资讯', url: 'https://www.oilchem.net/', category: '产业链', emoji: '⛽' },
+            { name: '金联创', url: 'https://www.315i.com/', category: '产业链', emoji: '🔗' },
+            { name: '慧聪化工网', url: 'https://www.hc360.com/', category: '产业链', emoji: '🧪' },
+            { name: '中国化工网', url: 'https://china.chemnet.com/', category: '产业链', emoji: '🧪' },
+            { name: '中塑在线', url: 'https://www.21cp.com/', category: '产业链', emoji: '🧴' },
+            { name: '钢之家', url: 'https://www.steelhome.cn/', category: '产业链', emoji: '🏭' },
+            { name: '我的钢铁网', url: 'https://www.mysteel.com/', category: '产业链', emoji: '🏭' },
+            { name: '上海有色金属网', url: 'https://www.smm.cn/', category: '产业链', emoji: '🔩' },
+            { name: '长江有色金属网', url: 'https://www.ccmn.cn/', category: '产业链', emoji: '🔩' }
         ];
 
         let editingIndex = -1;
         let searchQuery = '';
-
-        const emojis = ['🌐', '📚', '🛠️', '🎮', '📊', '🎨', '💡', '🔧', '📱', '💻', '🎯', '⭐', '🚀', '🔥', '✨', '💎'];
-
-        function getRandomEmoji() {
-            return emojis[Math.floor(Math.random() * emojis.length)];
-        }
 
         function getFaviconUrl(url) {
             try {
@@ -699,10 +860,9 @@
 
             if (saved) {
                 data = JSON.parse(saved);
-                // 检查是否包含所有新分类
-                const requiredCategories = ['期货', '股票', '宏观', '政府'];
+                const requiredCategories = ['期货', '股票', '宏观', '美国宏观', '政府', '投资工具', '产业链'];
                 const hasAllCategories = requiredCategories.every(cat => data.categories.includes(cat));
-                if (!hasAllCategories) {
+                if (!hasAllCategories || data.sites.length < 20) {
                     shouldReset = true;
                 }
             } else {
@@ -711,7 +871,7 @@
 
             if (shouldReset) {
                 data.sites = defaultSites;
-                data.categories = ['期货', '股票', '宏观', '政府'];
+                data.categories = ['期货', '股票', '宏观', '美国宏观', '政府', '投资工具', '产业链'];
                 data.theme = 'dark';
                 saveData();
             }
@@ -736,6 +896,13 @@
             saveData();
         }
 
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
         function saveData() {
             localStorage.setItem('navData', JSON.stringify(data));
         }
@@ -746,15 +913,26 @@
         }
 
         function renderCategories() {
-            const container = document.getElementById('categories');
-            let html = '<button class="category-tab ' + (data.currentCategory === '全部' ? 'active' : '') + '" onclick="filterCategory(\'全部\')">✨ 全部</button>';
-            data.categories.forEach(cat => {
-                html += '<button class="category-tab ' + (data.currentCategory === cat ? 'active' : '') + '" onclick="filterCategory(\'' + escapeHtml(cat) + '\')">' + escapeHtml(cat) + '</button>';
-            });
-            container.innerHTML = html;
+            // Sidebar categories
+            const sidebarContainer = document.getElementById('sidebarCategories');
+            sidebarContainer.innerHTML = data.categories.map(cat => {
+                const count = data.sites.filter(s => s.category === cat).length;
+                return `<div class="sidebar-item ${data.currentCategory === cat ? 'active' : ''}" onclick="filterCategory('${escapeHtml(cat)}')" data-cat="${escapeHtml(cat)}">
+                    <span class="sidebar-item-icon">📁</span>
+                    <span>${escapeHtml(cat)}</span>
+                    <span class="sidebar-item-count">${count}</span>
+                </div>`;
+            }).join('');
 
+            // Update counts
+            document.getElementById('count-全部').textContent = data.sites.length;
+            data.categories.forEach(cat => {
+                const count = data.sites.filter(s => s.category === cat).length;
+            });
+
+            // Select options
             const select = document.getElementById('siteCategory');
-            select.innerHTML = data.categories.map(cat => '<option value="' + escapeHtml(cat) + '">' + escapeHtml(cat) + '</option>').join('');
+            select.innerHTML = data.categories.map(cat => `<option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>`).join('');
         }
 
         function renderSites() {
@@ -769,9 +947,14 @@
             if (searchQuery) {
                 filteredSites = filteredSites.filter(site =>
                     site.name.toLowerCase().includes(searchQuery) ||
-                    site.url.toLowerCase().includes(searchQuery)
+                    site.url.toLowerCase().includes(searchQuery) ||
+                    (site.subLinks && site.subLinks.some(sl => sl.name.toLowerCase().includes(searchQuery) || sl.url.toLowerCase().includes(searchQuery)))
                 );
             }
+
+            // Update header
+            document.getElementById('headerTitle').textContent = data.currentCategory === '全部' ? '全部网站' : data.currentCategory;
+            document.getElementById('headerSubtitle').textContent = `共 ${filteredSites.length} 个网站`;
 
             if (filteredSites.length === 0) {
                 container.innerHTML = '';
@@ -784,39 +967,65 @@
             container.innerHTML = filteredSites.map((site, idx) => {
                 const originalIndex = data.sites.indexOf(site);
                 const faviconUrl = getFaviconUrl(site.url);
-                const emoji = site.emoji || getRandomEmoji();
+                const emoji = site.emoji || '🔗';
 
                 let iconHtml = `<span>${emoji}</span>`;
                 if (faviconUrl) {
                     iconHtml = `<img src="${faviconUrl}" alt="" onerror="this.parentElement.innerHTML='<span>${emoji}</span>'">`;
                 }
 
-                return '<div class="card">' +
-                    '<a class="card-link" href="' + escapeHtml(site.url) + '" target="_blank" onclick="event.stopPropagation()">' +
-                        '<div class="card-header">' +
-                            '<div class="card-icon">' + iconHtml + '</div>' +
-                            '<div class="card-info">' +
-                                '<div class="card-title">' + escapeHtml(site.name) + '</div>' +
-                                '<div class="card-url">' + escapeHtml(site.url) + '</div>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="card-footer">' +
-                            '<span class="card-category">📁 ' + escapeHtml(site.category) + '</span>' +
-                        '</div>' +
-                    '</a>' +
-                    '<div class="card-actions" style="position:absolute;top:16px;right:16px;">' +
-                        '<button class="btn btn-sm btn-edit" onclick="event.stopPropagation();editUrl(' + originalIndex + ')">✏️</button>' +
-                        '<button class="btn btn-sm btn-delete" onclick="event.stopPropagation();deleteUrl(' + originalIndex + ')">🗑️</button>' +
-                    '</div>' +
-                '</div>';
+                let subLinksHtml = '';
+                if (site.subLinks && site.subLinks.length > 0) {
+                    subLinksHtml = '<div class="card-sub-links">' +
+                        site.subLinks.map(sl =>
+                            `<a class="sub-link" href="${escapeHtml(sl.url)}" target="_blank" onclick="event.stopPropagation()">
+                                <span class="sub-link-icon">→</span>
+                                <span>${escapeHtml(sl.name)}</span>
+                            </a>`
+                        ).join('') +
+                        '</div>';
+                }
+
+                return `<div class="card">
+                    <a class="card-link" href="${escapeHtml(site.url)}" target="_blank" onclick="event.stopPropagation()" style="text-decoration:none;color:inherit;display:block;">
+                        <div class="card-header">
+                            <div class="card-icon">${iconHtml}</div>
+                            <div class="card-info">
+                                <div class="card-title">${escapeHtml(site.name)}</div>
+                                <div class="card-url">${escapeHtml(site.url)}</div>
+                            </div>
+                        </div>
+                        ${subLinksHtml}
+                        <span class="card-category">📁 ${escapeHtml(site.category)}</span>
+                    </a>
+                    <div class="card-actions">
+                        <button class="btn btn-sm btn-edit" onclick="event.stopPropagation();editUrl(${originalIndex})">✏️</button>
+                        <button class="btn btn-sm btn-delete" onclick="event.stopPropagation();deleteUrl(${originalIndex})">🗑️</button>
+                    </div>
+                </div>`;
             }).join('');
         }
 
         function filterCategory(cat) {
             data.currentCategory = cat;
             saveData();
+
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                if (item.dataset.cat === cat || (item.textContent.includes('全部') && cat === '全部')) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
             renderCategories();
             renderSites();
+
+            // Close mobile sidebar
+            if (window.innerWidth <= 900) {
+                toggleSidebar();
+            }
         }
 
         function openAddModal() {
@@ -824,7 +1033,9 @@
             document.getElementById('urlModalTitle').textContent = '添加网址';
             document.getElementById('siteName').value = '';
             document.getElementById('siteUrl').value = '';
+            document.getElementById('siteEmoji').value = '';
             document.getElementById('siteCategory').value = data.categories[0] || '';
+            document.getElementById('siteSubLinks').value = '';
             document.getElementById('urlModal').classList.add('active');
         }
 
@@ -834,7 +1045,16 @@
             document.getElementById('urlModalTitle').textContent = '编辑网址';
             document.getElementById('siteName').value = site.name;
             document.getElementById('siteUrl').value = site.url;
+            document.getElementById('siteEmoji').value = site.emoji || '';
             document.getElementById('siteCategory').value = site.category;
+
+            // Format sublinks
+            if (site.subLinks && site.subLinks.length > 0) {
+                document.getElementById('siteSubLinks').value = site.subLinks.map(sl => `${sl.name}|${sl.url}`).join('\n');
+            } else {
+                document.getElementById('siteSubLinks').value = '';
+            }
+
             document.getElementById('urlModal').classList.add('active');
         }
 
@@ -846,6 +1066,8 @@
             const name = document.getElementById('siteName').value.trim();
             const url = document.getElementById('siteUrl').value.trim();
             const category = document.getElementById('siteCategory').value;
+            const emoji = document.getElementById('siteEmoji').value.trim() || '🔗';
+            const subLinksText = document.getElementById('siteSubLinks').value.trim();
 
             if (!name || !url) {
                 alert('请填写名称和网址');
@@ -857,10 +1079,26 @@
                 fixedUrl = 'https://' + url;
             }
 
+            // Parse sublinks
+            let subLinks = [];
+            if (subLinksText) {
+                subLinks = subLinksText.split('\n').map(line => {
+                    const parts = line.split('|');
+                    if (parts.length >= 2) {
+                        let slUrl = parts[1].trim();
+                        if (!slUrl.startsWith('http://') && !slUrl.startsWith('https://')) {
+                            slUrl = 'https://' + slUrl;
+                        }
+                        return { name: parts[0].trim(), url: slUrl };
+                    }
+                    return null;
+                }).filter(sl => sl && sl.name && sl.url);
+            }
+
             if (editingIndex >= 0) {
-                data.sites[editingIndex] = { name, url: fixedUrl, category, emoji: data.sites[editingIndex].emoji || getRandomEmoji() };
+                data.sites[editingIndex] = { name, url: fixedUrl, category, emoji, subLinks };
             } else {
-                data.sites.push({ name, url: fixedUrl, category, emoji: getRandomEmoji() });
+                data.sites.push({ name, url: fixedUrl, category, emoji, subLinks });
             }
 
             saveData();
@@ -876,55 +1114,6 @@
             }
         }
 
-        // 导出数据
-        function exportData() {
-            const exportObj = {
-                version: '1.0',
-                exportDate: new Date().toISOString(),
-                categories: data.categories,
-                sites: data.sites
-            };
-            const dataStr = JSON.stringify(exportObj, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `web_navigation_backup_${new Date().toISOString().slice(0, 10)}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // 导入数据
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (imported.categories && imported.sites) {
-                        if (confirm(`确定要导入数据吗？\n\n分类: ${imported.categories.length} 个\n网址: ${imported.sites.length} 个\n\n这将覆盖当前所有数据！`)) {
-                            data.categories = imported.categories;
-                            data.sites = imported.sites;
-                            data.currentCategory = '全部';
-                            saveData();
-                            render();
-                            alert('导入成功！');
-                        }
-                    } else {
-                        alert('无效的文件格式！');
-                    }
-                } catch (err) {
-                    alert('导入失败: ' + err.message);
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
         function openCategoryModal() {
             renderCategoryList();
             document.getElementById('categoryModal').classList.add('active');
@@ -938,10 +1127,10 @@
             const container = document.getElementById('categoryList');
             container.innerHTML = data.categories.map((cat, idx) => {
                 const count = data.sites.filter(s => s.category === cat).length;
-                return '<div class="category-item">' +
-                    '<div><span>' + escapeHtml(cat) + '</span> <span class="category-count">' + count + '</span></div>' +
-                    (data.categories.length > 1 ? '<button class="btn btn-sm btn-delete" onclick="deleteCategory(' + idx + ')">删除</button>' : '') +
-                '</div>';
+                return `<div class="category-item">
+                    <div><span>${escapeHtml(cat)}</span> <span class="category-count">${count}</span></div>
+                    ${data.categories.length > 1 ? `<button class="btn btn-sm btn-delete" onclick="deleteCategory(${idx})">删除</button>` : ''}
+                </div>`;
             }).join('');
         }
 
@@ -978,12 +1167,61 @@
             }
         }
 
+        // Import/Export
+        function exportData() {
+            const exportObj = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                categories: data.categories,
+                sites: data.sites
+            };
+            const dataStr = JSON.stringify(exportObj, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `web_navigation_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.categories && imported.sites) {
+                        if (confirm(`确定要导入数据吗？\n\n分类: ${imported.categories.length} 个\n网址: ${imported.sites.length} 个\n\n这将覆盖当前所有数据！`)) {
+                            data.categories = imported.categories;
+                            data.sites = imported.sites;
+                            data.currentCategory = '全部';
+                            saveData();
+                            render();
+                            alert('导入成功！');
+                        }
+                    } else {
+                        alert('无效的文件格式！');
+                    }
+                } catch (err) {
+                    alert('导入失败: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
+        // Close modals on overlay click
         document.getElementById('urlModal').addEventListener('click', function(e) {
             if (e.target === this) closeUrlModal();
         });
