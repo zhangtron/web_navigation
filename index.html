@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网址导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-card-hover: rgba(51, 65, 85, 0.8);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --border: rgba(148, 163, 184, 0.1);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --glass-blur: 12px;
+        }
+
+        .light-theme {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --bg-card-hover: rgba(255, 255, 255, 0.95);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: rgba(148, 163, 184, 0.2);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(2%, 2%) rotate(1deg); }
+            50% { transform: translate(0, 4%) rotate(0deg); }
+            75% { transform: translate(-2%, 2%) rotate(-1deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .search-box {
+            max-width: 600px;
+            margin: 30px auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 56px 16px 24px;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 16px;
+            background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur));
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 20px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur));
+            color: var(--text-primary);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-icon {
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0 10px;
+        }
+
+        .category-tab {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur));
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .category-tab:hover {
+            color: var(--text-primary);
+            border-color: var(--accent);
+            background: var(--bg-card-hover);
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            background: var(--bg-card-hover);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 16px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .card-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-url {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-hover);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover .card-actions {
+            opacity: 1;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+
+        .btn-edit {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background: rgba(251, 191, 36, 0.25);
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: none;
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 32px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 520px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .category-item span {
+            color: var(--text-primary);
+        }
+
+        .category-count {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-hover);
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .modal-content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle">
+        <button class="btn btn-icon" onclick="toggleTheme()" title="切换主题">
+            <span id="themeIcon">🌙</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>网址导航</h1>
+            <p class="header-subtitle">发现和管理你喜爱的网站</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="搜索网站...">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="openAddModal()">
+                <span>➕</span> 添加网址
+            </button>
+            <button class="btn" onclick="openCategoryModal()">
+                <span>📁</span> 管理分类
+            </button>
+        </div>
+
+        <div class="categories" id="categories">
+        </div>
+
+        <div class="grid" id="grid">
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="empty-state-icon">🌐</div>
+            <h3>暂无网址</h3>
+            <p>点击"添加网址"按钮添加第一个网站</p>
+        </div>
+    </div>
+
+    <!-- 添加/编辑网址模态框 -->
+    <div class="modal" id="urlModal">
+        <div class="modal-content">
+            <div class="modal-header" id="urlModalTitle">添加网址</div>
+            <div class="form-group">
+                <label>名称</label>
+                <input type="text" id="siteName" placeholder="例如：生意社">
+            </div>
+            <div class="form-group">
+                <label>网址</label>
+                <input type="text" id="siteUrl" placeholder="https://www.example.com">
+            </div>
+            <div class="form-group">
+                <label>分类</label>
+                <select id="siteCategory"></select>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeUrlModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveUrl()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分类管理模态框 -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-content">
+            <div class="modal-header">管理分类</div>
+            <div class="form-group">
+                <label>添加新分类</label>
+                <div style="display:flex;gap:10px;">
+                    <input type="text" id="newCategory" placeholder="分类名称">
+                    <button class="btn btn-primary" onclick="addCategory()">添加</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>现有分类</label>
+                <div id="categoryList"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeCategoryModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let data = {
+            categories: ['期货', '股票', '宏观', '政府'],
+            sites: [],
+            currentCategory: '全部',
+            theme: 'dark'
+        };
+
+        const defaultSites = [
+            // 期货
+            { name: '生意社', url: 'https://www.100ppi.com/cindex/', category: '期货' },
+            { name: '大商所', url: 'http://www.dce.com.cn/dce/', category: '期货' },
+            { name: '中金所', url: 'http://www.cffex.com.cn/cn/hs300.html', category: '期货' },
+            { name: '广期所', url: 'http://www.gfex.com.cn/gfex/gyeg/sspz.shtml', category: '期货' },
+            { name: '郑交所', url: 'https://www.czce.com.cn/cn/sspz/H077002index_1.htm', category: '期货' },
+            { name: '上海能源交易所', url: 'https://www.ine.cn/products/futures/energyandchemical/sc_f/', category: '期货' },
+            { name: '上海期货交易所', url: 'https://www.shfe.com.cn/products/futures/metal/nonferrousmetal/sn_f/', category: '期货' },
+            // 股票
+            { name: '东方财富网', url: 'https://www.eastmoney.com/', category: '股票' },
+            { name: '同花顺', url: 'https://www.10jqka.com.cn/', category: '股票' },
+            { name: '雪球', url: 'https://xueqiu.com/', category: '股票' },
+            { name: '同花顺财经', url: 'http://www.10jqka.com.cn/', category: '股票' },
+            { name: '网易财经', url: 'https://money.163.com/', category: '股票' },
+            { name: '新浪财经', url: 'https://finance.sina.com.cn/', category: '股票' },
+            { name: '腾讯财经', url: 'https://finance.qq.com/', category: '股票' },
+            { name: '和讯网', url: 'https://www.hexun.com/', category: '股票' },
+            { name: '每日财经', url: 'https://www.mrcjcn.com/', category: '股票' },
+            { name: '中财网', url: 'https://www.cfi.net.cn/', category: '股票' },
+            // 宏观
+            { name: '国家统计局', url: 'https://www.stats.gov.cn/', category: '宏观' },
+            { name: '中国人民银行', url: 'http://www.pbc.gov.cn/', category: '宏观' },
+            { name: '财政部', url: 'http://www.mof.gov.cn/', category: '宏观' },
+            { name: '国家发改委', url: 'https://www.ndrc.gov.cn/', category: '宏观' },
+            { name: '国家外汇管理局', url: 'https://www.safe.gov.cn/', category: '宏观' },
+            { name: '国务院发展研究中心', url: 'http://www.drc.gov.cn/', category: '宏观' },
+            { name: '国家税务总局', url: 'https://www.chinatax.gov.cn/', category: '宏观' },
+            { name: '中国证券监督管理委员会', url: 'http://www.csrc.gov.cn/', category: '宏观' },
+            { name: '中国银行保险监督管理委员会', url: 'http://www.cbirc.gov.cn/', category: '宏观' },
+            { name: '中国期货业协会', url: 'http://www.cfachina.org/', category: '宏观' },
+            // 政府
+            { name: '中国政府网', url: 'http://www.gov.cn/', category: '政府' },
+            { name: '北京市人民政府', url: 'http://www.beijing.gov.cn/', category: '政府' },
+            { name: '上海市人民政府', url: 'http://www.shanghai.gov.cn/', category: '政府' },
+            { name: '天津市人民政府', url: 'http://www.tj.gov.cn/', category: '政府' },
+            { name: '重庆市人民政府', url: 'http://www.cq.gov.cn/', category: '政府' },
+            { name: '广东省人民政府', url: 'http://www.gd.gov.cn/', category: '政府' },
+            { name: '浙江省人民政府', url: 'http://www.zj.gov.cn/', category: '政府' },
+            { name: '江苏省人民政府', url: 'http://www.jiangsu.gov.cn/', category: '政府' },
+            { name: '山东省人民政府', url: 'http://www.shandong.gov.cn/', category: '政府' },
+            { name: '河南省人民政府', url: 'http://www.henan.gov.cn/', category: '政府' },
+            { name: '四川省人民政府', url: 'http://www.sc.gov.cn/', category: '政府' },
+            { name: '湖北省人民政府', url: 'http://www.hubei.gov.cn/', category: '政府' },
+            { name: '湖南省人民政府', url: 'http://www.hunan.gov.cn/', category: '政府' },
+            { name: '福建省人民政府', url: 'http://www.fujian.gov.cn/', category: '政府' },
+            { name: '安徽省人民政府', url: 'http://www.ah.gov.cn/', category: '政府' },
+            { name: '陕西省人民政府', url: 'http://www.shaanxi.gov.cn/', category: '政府' },
+            { name: '河北省人民政府', url: 'http://www.hebei.gov.cn/', category: '政府' },
+            { name: '辽宁省人民政府', url: 'http://www.ln.gov.cn/', category: '政府' },
+            { name: '黑龙江省人民政府', url: 'http://www.hlj.gov.cn/', category: '政府' },
+            { name: '吉林省人民政府', url: 'http://www.jl.gov.cn/', category: '政府' },
+            { name: '甘肃省人民政府', url: 'http://www.gansu.gov.cn/', category: '政府' },
+            { name: '山西省人民政府', url: 'http://www.shanxi.gov.cn/', category: '政府' },
+            { name: '贵州省人民政府', url: 'http://www.guizhou.gov.cn/', category: '政府' },
+            { name: '广西壮族自治区人民政府', url: 'http://www.gxzf.gov.cn/', category: '政府' },
+            { name: '云南省人民政府', url: 'http://www.yn.gov.cn/', category: '政府' },
+            { name: '新疆维吾尔自治区人民政府', url: 'http://www.xinjiang.gov.cn/', category: '政府' },
+            { name: '宁夏回族自治区人民政府', url: 'http://www.nx.gov.cn/', category: '政府' },
+            { name: '青海省人民政府', url: 'http://www.qh.gov.cn/', category: '政府' },
+            { name: '海南省人民政府', url: 'http://www.hainan.gov.cn/', category: '政府' },
+            { name: '西藏自治区人民政府', url: 'http://www.xizang.gov.cn/', category: '政府' },
+            { name: '香港特别行政区政府', url: 'http://www.gov.hk/', category: '政府' },
+            { name: '澳门特别行政区政府', url: 'http://www.gov.mo/', category: '政府' }
+        ];
+
+        let editingIndex = -1;
+        let searchQuery = '';
+
+        const emojis = ['🌐', '📚', '🛠️', '🎮', '📊', '🎨', '💡', '🔧', '📱', '💻', '🎯', '⭐', '🚀', '🔥', '✨', '💎'];
+
+        function getRandomEmoji() {
+            return emojis[Math.floor(Math.random() * emojis.length)];
+        }
+
+        function getFaviconUrl(url) {
+            try {
+                const domain = new URL(url).hostname;
+                return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+            } catch {
+                return null;
+            }
+        }
+
+        function init() {
+            const saved = localStorage.getItem('navData');
+            let shouldReset = false;
+
+            if (saved) {
+                data = JSON.parse(saved);
+                // 检查是否包含所有新分类
+                const requiredCategories = ['期货', '股票', '宏观', '政府'];
+                const hasAllCategories = requiredCategories.every(cat => data.categories.includes(cat));
+                if (!hasAllCategories) {
+                    shouldReset = true;
+                }
+            } else {
+                shouldReset = true;
+            }
+
+            if (shouldReset) {
+                data.sites = defaultSites;
+                data.categories = ['期货', '股票', '宏观', '政府'];
+                data.theme = 'dark';
+                saveData();
+            }
+
+            if (data.theme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
+
+            render();
+
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderSites();
+            });
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            data.theme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+            document.getElementById('themeIcon').textContent = data.theme === 'light' ? '☀️' : '🌙';
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem('navData', JSON.stringify(data));
+        }
+
+        function render() {
+            renderCategories();
+            renderSites();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories');
+            let html = '<button class="category-tab ' + (data.currentCategory === '全部' ? 'active' : '') + '" onclick="filterCategory(\'全部\')">✨ 全部</button>';
+            data.categories.forEach(cat => {
+                html += '<button class="category-tab ' + (data.currentCategory === cat ? 'active' : '') + '" onclick="filterCategory(\'' + escapeHtml(cat) + '\')">' + escapeHtml(cat) + '</button>';
+            });
+            container.innerHTML = html;
+
+            const select = document.getElementById('siteCategory');
+            select.innerHTML = data.categories.map(cat => '<option value="' + escapeHtml(cat) + '">' + escapeHtml(cat) + '</option>').join('');
+        }
+
+        function renderSites() {
+            const container = document.getElementById('grid');
+            const emptyState = document.getElementById('emptyState');
+
+            let filteredSites = data.sites;
+            if (data.currentCategory !== '全部') {
+                filteredSites = filteredSites.filter(site => site.category === data.currentCategory);
+            }
+
+            if (searchQuery) {
+                filteredSites = filteredSites.filter(site =>
+                    site.name.toLowerCase().includes(searchQuery) ||
+                    site.url.toLowerCase().includes(searchQuery)
+                );
+            }
+
+            if (filteredSites.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+
+            container.innerHTML = filteredSites.map((site, idx) => {
+                const originalIndex = data.sites.indexOf(site);
+                const faviconUrl = getFaviconUrl(site.url);
+                const emoji = site.emoji || getRandomEmoji();
+
+                let iconHtml = `<span>${emoji}</span>`;
+                if (faviconUrl) {
+                    iconHtml = `<img src="${faviconUrl}" alt="" onerror="this.parentElement.innerHTML='<span>${emoji}</span>'">`;
+                }
+
+                return '<div class="card">' +
+                    '<a class="card-link" href="' + escapeHtml(site.url) + '" target="_blank" onclick="event.stopPropagation()">' +
+                        '<div class="card-header">' +
+                            '<div class="card-icon">' + iconHtml + '</div>' +
+                            '<div class="card-info">' +
+                                '<div class="card-title">' + escapeHtml(site.name) + '</div>' +
+                                '<div class="card-url">' + escapeHtml(site.url) + '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="card-footer">' +
+                            '<span class="card-category">📁 ' + escapeHtml(site.category) + '</span>' +
+                        '</div>' +
+                    '</a>' +
+                    '<div class="card-actions" style="position:absolute;top:16px;right:16px;">' +
+                        '<button class="btn btn-sm btn-edit" onclick="event.stopPropagation();editUrl(' + originalIndex + ')">✏️</button>' +
+                        '<button class="btn btn-sm btn-delete" onclick="event.stopPropagation();deleteUrl(' + originalIndex + ')">🗑️</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function filterCategory(cat) {
+            data.currentCategory = cat;
+            saveData();
+            renderCategories();
+            renderSites();
+        }
+
+        function openAddModal() {
+            editingIndex = -1;
+            document.getElementById('urlModalTitle').textContent = '添加网址';
+            document.getElementById('siteName').value = '';
+            document.getElementById('siteUrl').value = '';
+            document.getElementById('siteCategory').value = data.categories[0] || '';
+            document.getElementById('urlModal').classList.add('active');
+        }
+
+        function editUrl(index) {
+            editingIndex = index;
+            const site = data.sites[index];
+            document.getElementById('urlModalTitle').textContent = '编辑网址';
+            document.getElementById('siteName').value = site.name;
+            document.getElementById('siteUrl').value = site.url;
+            document.getElementById('siteCategory').value = site.category;
+            document.getElementById('urlModal').classList.add('active');
+        }
+
+        function closeUrlModal() {
+            document.getElementById('urlModal').classList.remove('active');
+        }
+
+        function saveUrl() {
+            const name = document.getElementById('siteName').value.trim();
+            const url = document.getElementById('siteUrl').value.trim();
+            const category = document.getElementById('siteCategory').value;
+
+            if (!name || !url) {
+                alert('请填写名称和网址');
+                return;
+            }
+
+            let fixedUrl = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                fixedUrl = 'https://' + url;
+            }
+
+            if (editingIndex >= 0) {
+                data.sites[editingIndex] = { name, url: fixedUrl, category, emoji: data.sites[editingIndex].emoji || getRandomEmoji() };
+            } else {
+                data.sites.push({ name, url: fixedUrl, category, emoji: getRandomEmoji() });
+            }
+
+            saveData();
+            closeUrlModal();
+            render();
+        }
+
+        function deleteUrl(index) {
+            if (confirm('确定要删除这个网址吗？')) {
+                data.sites.splice(index, 1);
+                saveData();
+                render();
+            }
+        }
+
+        function openCategoryModal() {
+            renderCategoryList();
+            document.getElementById('categoryModal').classList.add('active');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('active');
+        }
+
+        function renderCategoryList() {
+            const container = document.getElementById('categoryList');
+            container.innerHTML = data.categories.map((cat, idx) => {
+                const count = data.sites.filter(s => s.category === cat).length;
+                return '<div class="category-item">' +
+                    '<div><span>' + escapeHtml(cat) + '</span> <span class="category-count">' + count + '</span></div>' +
+                    (data.categories.length > 1 ? '<button class="btn btn-sm btn-delete" onclick="deleteCategory(' + idx + ')">删除</button>' : '') +
+                '</div>';
+            }).join('');
+        }
+
+        function addCategory() {
+            const input = document.getElementById('newCategory');
+            const name = input.value.trim();
+            if (!name) return;
+            if (data.categories.includes(name)) {
+                alert('该分类已存在');
+                return;
+            }
+            data.categories.push(name);
+            saveData();
+            input.value = '';
+            renderCategoryList();
+            renderCategories();
+        }
+
+        function deleteCategory(index) {
+            const cat = data.categories[index];
+            const count = data.sites.filter(s => s.category === cat).length;
+            if (count > 0) {
+                alert('该分类下还有 ' + count + ' 个网址，请先移动或删除这些网址');
+                return;
+            }
+            if (confirm('确定要删除这个分类吗？')) {
+                data.categories.splice(index, 1);
+                if (data.currentCategory === cat) {
+                    data.currentCategory = '全部';
+                }
+                saveData();
+                renderCategoryList();
+                render();
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.getElementById('urlModal').addEventListener('click', function(e) {
+            if (e.target === this) closeUrlModal();
+        });
+        document.getElementById('categoryModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCategoryModal();
+        });
+
+        init();
+    </script>
+</body>
+</html>
