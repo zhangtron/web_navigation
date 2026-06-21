@@ -24,6 +24,7 @@
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             --glass-blur: 12px;
             --sidebar-width: 260px;
+            --header-height: 64px;
         }
 
         .light-theme {
@@ -68,34 +69,96 @@
             75% { transform: translate(-2%, 2%) rotate(-1deg); }
         }
 
+        /* Top Header */
+        .top-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--bg-card);
+            backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 200;
+        }
+
+        .top-header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            display: none;
+            padding: 8px;
+        }
+
+        .top-header-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .top-header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-search {
+            position: relative;
+            margin-left: 40px;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .header-search-input {
+            width: 100%;
+            padding: 10px 40px 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 14px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .header-search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .header-search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
         /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
-            height: 100vh;
+            height: calc(100vh - var(--header-height));
             position: fixed;
             left: 0;
-            top: 0;
+            top: var(--header-height);
             background: var(--bg-card);
             backdrop-filter: blur(var(--glass-blur));
             border-right: 1px solid var(--border);
             padding: 20px;
             overflow-y: auto;
             z-index: 100;
-        }
-
-        .sidebar-header {
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .sidebar-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            transition: transform 0.3s ease;
         }
 
         .sidebar-section {
@@ -155,14 +218,8 @@
         .main-content {
             flex: 1;
             margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
             padding: 24px;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 200;
         }
 
         .header {
@@ -170,7 +227,7 @@
         }
 
         .header-title {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--text-primary);
             font-weight: 700;
             margin-bottom: 4px;
@@ -179,39 +236,6 @@
         .header-subtitle {
             color: var(--text-secondary);
             font-size: 0.95rem;
-        }
-
-        .search-box {
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            max-width: 500px;
-            padding: 14px 48px 14px 20px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            font-size: 15px;
-            background: var(--bg-card);
-            backdrop-filter: blur(var(--glass-blur));
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 18px;
         }
 
         .toolbar {
@@ -486,23 +510,6 @@
             resize: vertical;
         }
 
-        .sub-links-input {
-            border: 1px dashed var(--border);
-            border-radius: 10px;
-            padding: 12px;
-            background: var(--bg-secondary);
-        }
-
-        .sub-link-item {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .sub-link-item input {
-            flex: 1;
-        }
-
         .modal-footer {
             display: flex;
             gap: 10px;
@@ -558,7 +565,7 @@
 
             .sidebar {
                 transform: translateX(-100%);
-                transition: transform 0.3s ease;
+                width: 280px;
             }
 
             .sidebar.open {
@@ -570,15 +577,11 @@
             }
 
             .menu-toggle {
-                display: block !important;
-                position: fixed;
-                top: 16px;
-                left: 16px;
-                z-index: 150;
+                display: block;
             }
 
-            .toolbar {
-                padding-left: 50px;
+            .header-search {
+                display: none;
             }
         }
 
@@ -590,16 +593,16 @@
             .main-content {
                 padding: 16px;
             }
-        }
 
-        .menu-toggle {
-            display: none;
+            .top-header-title {
+                font-size: 1.1rem;
+            }
         }
 
         .sidebar-overlay {
             display: none;
             position: fixed;
-            top: 0;
+            top: var(--header-height);
             left: 0;
             right: 0;
             bottom: 0;
@@ -613,21 +616,35 @@
     </style>
 </head>
 <body>
-    <!-- Mobile Menu Toggle -->
-    <button class="btn btn-icon menu-toggle" onclick="toggleSidebar()" style="display:none;">
-        <span>☰</span>
-    </button>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="top-header-left">
+            <button class="btn btn-icon menu-toggle" onclick="toggleSidebar()">
+                <span>☰</span>
+            </button>
+            <div class="top-header-title">🔗 网址导航</div>
+        </div>
+
+        <div class="header-search">
+            <input type="text" class="header-search-input" id="searchInput" placeholder="搜索网站...">
+            <span class="header-search-icon">🔍</span>
+        </div>
+
+        <div class="top-header-right">
+            <button class="btn btn-icon" onclick="toggleTheme()" title="切换主题">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-title">🔗 网址导航</div>
-        </div>
-
         <div class="sidebar-section">
             <div class="sidebar-section-title">快速访问</div>
-            <div class="sidebar-item active" onclick="filterCategory('全部')" data-cat="全部">
+            <div class="sidebar-item" onclick="filterCategory('全部')" data-cat="全部">
                 <span class="sidebar-item-icon">✨</span>
                 <span>全部</span>
                 <span class="sidebar-item-count" id="count-全部">0</span>
@@ -661,20 +678,9 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <div class="theme-toggle">
-            <button class="btn btn-icon" onclick="toggleTheme()" title="切换主题">
-                <span id="themeIcon">🌙</span>
-            </button>
-        </div>
-
         <div class="header">
-            <div class="header-title" id="headerTitle">全部网站</div>
+            <div class="header-title" id="headerTitle">股票</div>
             <div class="header-subtitle" id="headerSubtitle">快速访问你收藏的网址</div>
-        </div>
-
-        <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" class="search-input" id="searchInput" placeholder="搜索网站..." style="padding-left: 48px;">
         </div>
 
         <div class="toolbar">
@@ -751,7 +757,7 @@
         let data = {
             categories: ['期货', '股票', '宏观', '美国宏观', '政府', '投资工具', '产业链'],
             sites: [],
-            currentCategory: '全部',
+            currentCategory: '股票',
             theme: 'dark'
         };
 
@@ -872,6 +878,7 @@
             if (shouldReset) {
                 data.sites = defaultSites;
                 data.categories = ['期货', '股票', '宏观', '美国宏观', '政府', '投资工具', '产业链'];
+                data.currentCategory = '股票';
                 data.theme = 'dark';
                 saveData();
             }
@@ -883,10 +890,13 @@
 
             render();
 
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                searchQuery = e.target.value.toLowerCase();
-                renderSites();
-            });
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value.toLowerCase();
+                    renderSites();
+                });
+            }
         }
 
         function toggleTheme() {
@@ -925,14 +935,14 @@
             }).join('');
 
             // Update counts
-            document.getElementById('count-全部').textContent = data.sites.length;
-            data.categories.forEach(cat => {
-                const count = data.sites.filter(s => s.category === cat).length;
-            });
+            const countAll = document.getElementById('count-全部');
+            if (countAll) countAll.textContent = data.sites.length;
 
             // Select options
             const select = document.getElementById('siteCategory');
-            select.innerHTML = data.categories.map(cat => `<option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>`).join('');
+            if (select) {
+                select.innerHTML = data.categories.map(cat => `<option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>`).join('');
+            }
         }
 
         function renderSites() {
@@ -953,8 +963,10 @@
             }
 
             // Update header
-            document.getElementById('headerTitle').textContent = data.currentCategory === '全部' ? '全部网站' : data.currentCategory;
-            document.getElementById('headerSubtitle').textContent = `共 ${filteredSites.length} 个网站`;
+            const headerTitle = document.getElementById('headerTitle');
+            const headerSubtitle = document.getElementById('headerSubtitle');
+            if (headerTitle) headerTitle.textContent = data.currentCategory === '全部' ? '全部网站' : data.currentCategory;
+            if (headerSubtitle) headerSubtitle.textContent = `共 ${filteredSites.length} 个网站`;
 
             if (filteredSites.length === 0) {
                 container.innerHTML = '';
@@ -1024,7 +1036,10 @@
 
             // Close mobile sidebar
             if (window.innerWidth <= 900) {
-                toggleSidebar();
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
             }
         }
 
@@ -1199,7 +1214,7 @@
                         if (confirm(`确定要导入数据吗？\n\n分类: ${imported.categories.length} 个\n网址: ${imported.sites.length} 个\n\n这将覆盖当前所有数据！`)) {
                             data.categories = imported.categories;
                             data.sites = imported.sites;
-                            data.currentCategory = '全部';
+                            data.currentCategory = '股票';
                             saveData();
                             render();
                             alert('导入成功！');
