@@ -534,7 +534,15 @@
             <button class="btn" onclick="openCategoryModal()">
                 <span>📁</span> 管理分类
             </button>
+            <button class="btn" onclick="exportData()">
+                <span>📤</span> 导出
+            </button>
+            <button class="btn" onclick="document.getElementById('importFile').click()">
+                <span>📥</span> 导入
+            </button>
         </div>
+
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
 
         <div class="categories" id="categories">
         </div>
@@ -866,6 +874,55 @@
                 saveData();
                 render();
             }
+        }
+
+        // 导出数据
+        function exportData() {
+            const exportObj = {
+                version: '1.0',
+                exportDate: new Date().toISOString(),
+                categories: data.categories,
+                sites: data.sites
+            };
+            const dataStr = JSON.stringify(exportObj, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `web_navigation_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 导入数据
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.categories && imported.sites) {
+                        if (confirm(`确定要导入数据吗？\n\n分类: ${imported.categories.length} 个\n网址: ${imported.sites.length} 个\n\n这将覆盖当前所有数据！`)) {
+                            data.categories = imported.categories;
+                            data.sites = imported.sites;
+                            data.currentCategory = '全部';
+                            saveData();
+                            render();
+                            alert('导入成功！');
+                        }
+                    } else {
+                        alert('无效的文件格式！');
+                    }
+                } catch (err) {
+                    alert('导入失败: ' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
         }
 
         function openCategoryModal() {
